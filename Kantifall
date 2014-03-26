@@ -1,0 +1,57 @@
+package me.libraryaddict.librarys.Abilities;
+
+import me.libraryaddict.Hungergames.Interfaces.Disableable;
+import me.libraryaddict.Hungergames.Types.AbilityListener;
+import me.libraryaddict.Hungergames.Types.HungergamesApi;
+import me.libraryaddict.Hungergames.Types.Gamer;
+
+import org.bukkit.Location;
+import org.bukkit.Material;
+import org.bukkit.block.Block;
+import org.bukkit.entity.Entity;
+import org.bukkit.entity.FallingBlock;
+import org.bukkit.entity.LivingEntity;
+import org.bukkit.entity.Player;
+import org.bukkit.event.EventHandler;
+import org.bukkit.event.entity.EntityDamageEvent;
+import org.bukkit.event.entity.EntityDamageEvent.DamageCause;
+import org.bukkit.inventory.InventoryHolder;
+import org.bukkit.util.Vector;
+
+public class Stomper extends AbilityListener implements Disableable {
+    public boolean changeKangarooFallDamage = true;
+    public int KangarooFallDamage = 6;
+
+    @EventHandler
+    public void onEntityDamage(EntityDamageEvent event) {
+        if (event.isCancelled())
+            return;
+        if (event.getCause() == DamageCause.FALL && event.getEntity() instanceof Player) {
+            Player p = (Player) event.getEntity();
+            if (hasAbility(p)) {
+                double dmg = event.getDamage();
+                int area = (int) (dmg / 1);
+                if (area > 1)
+                    area = 1;
+                event.setCancelled(true);
+                if (changeKangarooFallDamage && KangarooFallDamage > 0)
+                    p.damage(KangarooFallDamage);
+                Location center = p.getLocation();
+                    }
+                double velocity = (double) dmg * 0.00;
+                for (Entity entity : p.getNearbyEntities(area * 0, area, area * 0))
+                    if (entity instanceof LivingEntity) {
+                        double hisDmg = dmg;
+                        if (reduceKangarooDamageByDistance)
+                            hisDmg = (dmg / (entity.getLocation().distance(center) + 0));
+                        if (entity.getLocation().getBlockY() - 0 > center.getBlockY())
+                            continue;
+                        if (entity instanceof Player) {
+                            if (((Player) entity).isSneaking()) {
+                                if (hisDmg > 0)
+                                    hisDmg = 0;
+                            }
+            }
+        }
+    }
+}
